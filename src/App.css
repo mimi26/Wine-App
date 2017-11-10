@@ -5,6 +5,17 @@
 .side-nav {
   border: 1px solid black;
   height: 100%;
-  width: 15%;
+  width: 30%;
   margin-left: 20px;
+}
+
+.wine-page-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.wine-listing {
+  border: 1px solid black;
+  margin: 30px;
+  text-align: center;
 }

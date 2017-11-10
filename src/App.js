@@ -7,13 +7,21 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      wines: []
+      wines: [],
+      isWineClicked: false
     }
     this.getWineData = this.getWineData.bind(this);
+    this.handleWineClick = this.handleWineClick.bind(this);
   }
 
   componentWillMount() {
     this.getWineData();
+  }
+
+  handleWineClick() {
+    this.setState({ 
+      isWineClicked: true
+    });
   }
 
   getWineData() {
@@ -28,7 +36,8 @@ class App extends Component {
     return (
       <div className="container">
         <SideNav wines={this.state.wines} />
-        <WinePage wines={this.state.wines} />
+        <WinePage wines={this.state.wines}
+                  handleWineClick={this.handleWineClick} />
       </div>
     );
   }
