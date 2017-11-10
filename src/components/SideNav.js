@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class SideNav extends Component {
     render() {
-        const { wines } = this.props;
+        const { wines, handleWineClick } = this.props;
 
         return (
             <div className="side-nav">
@@ -11,7 +11,7 @@ class SideNav extends Component {
                 <ul>
                     {wines.map((wine, i) => {
                         return(
-                            <li key={i}>{wine.name}, {wine.year}</li>
+                            <li key={i} onClick={() => handleWineClick(wine)}>{wine.name}, {wine.year}</li>
                         )
                     })}
                 </ul>

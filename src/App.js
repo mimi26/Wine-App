@@ -8,7 +8,8 @@ class App extends Component {
     super();
     this.state = {
       wines: [],
-      isWineClicked: false
+      isWineClicked: false,
+      clickedWine: ''
     }
     this.getWineData = this.getWineData.bind(this);
     this.handleWineClick = this.handleWineClick.bind(this);
@@ -18,9 +19,10 @@ class App extends Component {
     this.getWineData();
   }
 
-  handleWineClick() {
+  handleWineClick(wineData) {
     this.setState({ 
-      isWineClicked: true
+      isWineClicked: true,
+      clickedWine: wineData
     });
   }
 
@@ -34,10 +36,16 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-        <SideNav wines={this.state.wines} />
-        <WinePage wines={this.state.wines}
-                  handleWineClick={this.handleWineClick} />
+      <div>
+        <div className="header-wrapper">
+          <h1 className="header">Wine Time</h1>
+        </div>
+        <div className="container">
+            <SideNav  wines={this.state.wines}
+                      handleWineClick={this.handleWineClick} />
+            <WinePage wines={this.state.wines}
+                      handleWineClick={this.handleWineClick} />
+        </div>
       </div>
     );
   }

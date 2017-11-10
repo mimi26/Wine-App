@@ -9,7 +9,7 @@ class WinePage extends Component {
                 {wines.map((wine, i) => {
                     return ( 
                         <div key={i}    className="wine-listing"
-                                        onClick={handleWineClick}
+                                        onClick={() => handleWineClick(wine)}
                         >
                             <img src={wine.picture} className="wine-picture" alt="" />
                             <p className="wine-description">
