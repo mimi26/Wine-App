@@ -30,10 +30,7 @@ class App extends Component {
     this.handleAddWineClick = this.handleAddWineClick.bind(this);
     this.renderFormOrIndexOrSingle = this.renderFormOrIndexOrSingle.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
-  }
-
-  componentWillMount() {
-    this.getWineData();
+    this.deleteWine = this.deleteWine.bind(this);
   }
 
   handleWineClick(wineData) {
@@ -57,7 +54,6 @@ class App extends Component {
 
   handleNewWineSubmit(e) {
     e.preventDefault();
-    console.log(e.target.name.value, e.target.year.value, e.target.grapes.value, e.target.country.value, e.target.region.value, e.target.description.value, e.target.picture.value, e.target.price.value)
     axios.post(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`, {
         name: e.target.name.value,
         year: e.target.year.value,
@@ -67,9 +63,20 @@ class App extends Component {
         description: e.target.description.value,
         picture: e.target.picture.value,
         price: e.target.price.value
-    }).then(res => {
-      console.log(res);
+    })
+    .then(res => {
+      this.setState({ isAddWineClicked: false })
+    })
+    .catch(err => {
+      console.log(err);
     });
+  }
+
+  deleteWine(id) {
+    axios.delete(`https://myapi-profstream.herokuapp.com/api/c8542c/wines/${id}`)
+    .catch(err =>{
+      console.log(err);
+    })
   }
 
   handleAddWineClick() {
@@ -102,7 +109,9 @@ class App extends Component {
     } else {
       return (
         <WinePage wines={this.state.wines}
-                  handleWineClick={this.handleWineClick} />
+                  handleWineClick={this.handleWineClick}
+                  deleteWine={this.deleteWine} 
+                  getWineData={this.getWineData}/>
       )
     }
   }
