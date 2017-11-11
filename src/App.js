@@ -24,7 +24,7 @@ class App extends Component {
     this.handleBackClick = this.handleBackClick.bind(this);
     this.handleNewWineSubmit = this.handleNewWineSubmit.bind(this);
     this.handleAddWineClick = this.handleAddWineClick.bind(this);
-    this.renderFormOrIndexOrSingle = this.renderFormOrIndexOrSingle.bind(this);
+    this.whichComponentToRender = this.whichComponentToRender.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
     this.deleteWine = this.deleteWine.bind(this);
     this.editWine = this.editWine.bind(this);
@@ -85,13 +85,18 @@ class App extends Component {
   }
 
   handleAddWineClick() {
-    this.setState({ isAddWineClicked: true });
+    this.setState({ 
+      isAddWineClicked: true,
+      isEditClicked: false,
+      isWineClicked: false
+     });
   }
 
   editWine(id) {
    this.setState({ 
      isEditClicked: true,
      isWineClicked: false,
+     isAddWineClicked: false,
      wineToEdit: id 
     });
   }
@@ -105,17 +110,19 @@ class App extends Component {
   }
 
   renderHeader() {
-    const { clickedWine } = this.state;
-    if (this.state.clickedWine) {
+    const { isAddWineClicked, isEditClicked, isWineClicked, clickedWine } = this.state;
+    if (this.state.isWineClicked) {
       return <h1 className="header-clicked-wine">: {clickedWine.name}, {clickedWine.year}</h1>
     } else if (this.state.isAddWineClicked) {
       return <h1 className="header-clicked-wine">: Add New Wine Form</h1>
+    } else if (this.state.isEditClicked) {
+      return <h1 className="header-clicked-wine">: Edit Wine</h1>
     } else {
       return null;
     }
   }
 
-  renderFormOrIndexOrSingle() {
+  whichComponentToRender() {
     if (this.state.isWineClicked) {
       return (
         <SingleWine clickedWine={this.state.clickedWine}  
@@ -156,7 +163,7 @@ class App extends Component {
                       handleWineClick={this.handleWineClick}
                       handleAddWineClick={this.handleAddWineClick}
                       handleBackClick={this.handleBackClick} />
-            {this.renderFormOrIndexOrSingle()}
+            {this.whichComponentToRender()}
         </div>
       </div>
     );
