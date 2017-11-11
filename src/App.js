@@ -74,6 +74,9 @@ class App extends Component {
 
   deleteWine(id) {
     axios.delete(`https://myapi-profstream.herokuapp.com/api/c8542c/wines/${id}`)
+    .then(res => {
+      this.getWineData();
+    })
     .catch(err =>{
       console.log(err);
     })
