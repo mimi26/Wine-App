@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import SideNav from './components/SideNav';
 import WinePage from './components/WinePage';
+import SingleWine from './components/SingleWine';
 
 class App extends Component {
   constructor() {
@@ -13,6 +14,7 @@ class App extends Component {
     }
     this.getWineData = this.getWineData.bind(this);
     this.handleWineClick = this.handleWineClick.bind(this);
+    this.handleBackClick = this.handleBackClick.bind(this);
   }
 
   componentWillMount() {
@@ -25,6 +27,10 @@ class App extends Component {
       clickedWine: wineData
     });
   }
+  
+  handleBackClick() {
+    this.setState({ isWineClicked: false });
+  }
 
   getWineData() {
     fetch(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`)
@@ -35,16 +41,20 @@ class App extends Component {
   }
 
   render() {
+    const { clickedWine } = this.state;
     return (
       <div>
         <div className="header-wrapper">
           <h1 className="header">Wine Time</h1>
+          {clickedWine ? <h1 className="header-clicked-wine">: {clickedWine.name}, {clickedWine.year}</h1>: null}
         </div>
         <div className="container">
             <SideNav  wines={this.state.wines}
                       handleWineClick={this.handleWineClick} />
+            {this.state.isWineClicked ? <SingleWine clickedWine={clickedWine} 
+                                                    handleBackClick={this.handleBackClick} /> : 
             <WinePage wines={this.state.wines}
-                      handleWineClick={this.handleWineClick} />
+                      handleWineClick={this.handleWineClick} />}
         </div>
       </div>
     );
