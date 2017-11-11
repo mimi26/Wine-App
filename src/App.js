@@ -5,6 +5,7 @@ import SideNav from './components/SideNav';
 import WinePage from './components/WinePage';
 import SingleWine from './components/SingleWine';
 import NewWineForm from './components/NewWineForm';
+import EditWineForm from './components/EditWineForm';
 
 class App extends Component {
   constructor() {
@@ -14,13 +15,8 @@ class App extends Component {
       isWineClicked: false,
       isAddWineClicked: false,
       clickedWine: '',
-      newWineName: '',
-      newWinePrice: '',
-      newWineDescription: '',
-      newWineYear: '',
-      newWineCountry: '',
-      newWineRegion: '',
-      newWineGrapes: ''
+      isEditClicked: false,
+      wineToEdit: '',
     }
 
     this.getWineData = this.getWineData.bind(this);
@@ -31,6 +27,8 @@ class App extends Component {
     this.renderFormOrIndexOrSingle = this.renderFormOrIndexOrSingle.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
     this.deleteWine = this.deleteWine.bind(this);
+    this.editWine = this.editWine.bind(this);
+    this.renderWineList = this.renderWineList.bind(this);
   }
 
   handleWineClick(wineData) {
@@ -41,7 +39,11 @@ class App extends Component {
   }
   
   handleBackClick() {
-    this.setState({ isWineClicked: false });
+    this.setState({ 
+      isWineClicked: false,
+      isAddWineClicked: false,
+      isEditClicked: false
+    });
   }
 
   getWineData() {
@@ -86,6 +88,22 @@ class App extends Component {
     this.setState({ isAddWineClicked: true });
   }
 
+  editWine(id) {
+   this.setState({ 
+     isEditClicked: true,
+     isWineClicked: false,
+     wineToEdit: id 
+    });
+  }
+
+  renderWineList() {
+    this.setState({
+      isAddWineClicked: false,
+      isWineClicked: false,
+      isEditClicked: false
+    });
+  }
+
   renderHeader() {
     const { clickedWine } = this.state;
     if (this.state.clickedWine) {
@@ -100,8 +118,8 @@ class App extends Component {
   renderFormOrIndexOrSingle() {
     if (this.state.isWineClicked) {
       return (
-        <SingleWine clickedWine={this.state.clickedWine} 
-                    handleBackClick={this.handleBackClick} />
+        <SingleWine clickedWine={this.state.clickedWine}  
+                    editWine={this.editWine} />
       )
     } else if (this.state.isAddWineClicked) {
       return (
@@ -109,7 +127,14 @@ class App extends Component {
                       handleNewWineSubmit={this.handleNewWineSubmit} 
                       newWineName={this.state.newWineName}/>
       )
-    } else {
+    } else if (this.state.isEditClicked) {
+      return (
+        <EditWineForm clickedWine={this.state.clickedWine}
+                      wineToEdit={this.state.wineToEdit}
+                      renderWineList={this.renderWineList}/>
+      )
+    }
+    else {
       return (
         <WinePage wines={this.state.wines}
                   handleWineClick={this.handleWineClick}
@@ -129,7 +154,8 @@ class App extends Component {
         <div className="container">
             <SideNav  wines={this.state.wines}
                       handleWineClick={this.handleWineClick}
-                      handleAddWineClick={this.handleAddWineClick} />
+                      handleAddWineClick={this.handleAddWineClick}
+                      handleBackClick={this.handleBackClick} />
             {this.renderFormOrIndexOrSingle()}
         </div>
       </div>

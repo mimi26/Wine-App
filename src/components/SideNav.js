@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class SideNav extends Component {
     render() {
-        const { wines, handleWineClick } = this.props;
+        const { wines, handleWineClick, handleBackClick } = this.props;
 
         return (
             <div className="side-nav">
@@ -16,6 +16,7 @@ class SideNav extends Component {
                     })}
                 </ul>
                 <button onClick={this.props.handleAddWineClick}>Add New Wine</button>
+                <button onClick={handleBackClick}>View All Wines</button>
             </div>
         );
     }

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 
 class SingleWine extends Component {
     render() {
-        const { clickedWine, handleBackClick } = this.props;
+        const { clickedWine, editWine } = this.props;
         return (
             <div className="single-wine-container">
-                <div className="back-to-wines" onClick={handleBackClick}>Back To Wine Page</div>
+                <button onClick={() => editWine(clickedWine.id)}>Edit this wine</button>
                 <div className="single-wine-listing">
                     <div className="wine-price">$ {clickedWine.price}.00</div>
                     <div className="single-wine-name">{clickedWine.name}, {clickedWine.year}</div>
