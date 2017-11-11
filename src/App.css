@@ -23,3 +23,12 @@
 .header-wrapper {
   display: flex;
 }
+
+.back-to-wines {
+  border: 1px solid black;
+  height: 40px;
+  width: 170px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

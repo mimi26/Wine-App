@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 import SideNav from './components/SideNav';
 import WinePage from './components/WinePage';
 import SingleWine from './components/SingleWine';
+import NewWineForm from './components/NewWineForm';
 
 class App extends Component {
   constructor() {
@@ -10,11 +12,24 @@ class App extends Component {
     this.state = {
       wines: [],
       isWineClicked: false,
-      clickedWine: ''
+      isAddWineClicked: false,
+      clickedWine: '',
+      newWineName: '',
+      newWinePrice: '',
+      newWineDescription: '',
+      newWineYear: '',
+      newWineCountry: '',
+      newWineRegion: '',
+      newWineGrapes: ''
     }
+
     this.getWineData = this.getWineData.bind(this);
     this.handleWineClick = this.handleWineClick.bind(this);
     this.handleBackClick = this.handleBackClick.bind(this);
+    this.handleNewWineSubmit = this.handleNewWineSubmit.bind(this);
+    this.handleAddWineClick = this.handleAddWineClick.bind(this);
+    this.renderFormOrIndexOrSingle = this.renderFormOrIndexOrSingle.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
   }
 
   componentWillMount() {
@@ -40,21 +55,70 @@ class App extends Component {
     });
   }
 
-  render() {
+  handleNewWineSubmit(e) {
+    e.preventDefault();
+    console.log(e.target.name.value, e.target.year.value, e.target.grapes.value, e.target.country.value, e.target.region.value, e.target.description.value, e.target.picture.value, e.target.price.value)
+    axios.post(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`, {
+        name: e.target.name.value,
+        year: e.target.year.value,
+        grapes: e.target.grapes.value,
+        country: e.target.country.value,
+        region: e.target.region.value,
+        description: e.target.description.value,
+        picture: e.target.picture.value,
+        price: e.target.price.value
+    }).then(res => {
+      console.log(res);
+    });
+  }
+
+  handleAddWineClick() {
+    this.setState({ isAddWineClicked: true });
+  }
+
+  renderHeader() {
     const { clickedWine } = this.state;
+    if (this.state.clickedWine) {
+      return <h1 className="header-clicked-wine">: {clickedWine.name}, {clickedWine.year}</h1>
+    } else if (this.state.isAddWineClicked) {
+      return <h1 className="header-clicked-wine">: Add New Wine Form</h1>
+    } else {
+      return null;
+    }
+  }
+
+  renderFormOrIndexOrSingle() {
+    if (this.state.isWineClicked) {
+      return (
+        <SingleWine clickedWine={this.state.clickedWine} 
+                    handleBackClick={this.handleBackClick} />
+      )
+    } else if (this.state.isAddWineClicked) {
+      return (
+        <NewWineForm  handleAddWineClick={this.handleAddWineClick}
+                      handleNewWineSubmit={this.handleNewWineSubmit} 
+                      newWineName={this.state.newWineName}/>
+      )
+    } else {
+      return (
+        <WinePage wines={this.state.wines}
+                  handleWineClick={this.handleWineClick} />
+      )
+    }
+  }
+
+  render() {
     return (
       <div>
         <div className="header-wrapper">
           <h1 className="header">Wine Time</h1>
-          {clickedWine ? <h1 className="header-clicked-wine">: {clickedWine.name}, {clickedWine.year}</h1>: null}
+          {this.renderHeader()}
         </div>
         <div className="container">
             <SideNav  wines={this.state.wines}
-                      handleWineClick={this.handleWineClick} />
-            {this.state.isWineClicked ? <SingleWine clickedWine={clickedWine} 
-                                                    handleBackClick={this.handleBackClick} /> : 
-            <WinePage wines={this.state.wines}
-                      handleWineClick={this.handleWineClick} />}
+                      handleWineClick={this.handleWineClick}
+                      handleAddWineClick={this.handleAddWineClick} />
+            {this.renderFormOrIndexOrSingle()}
         </div>
       </div>
     );

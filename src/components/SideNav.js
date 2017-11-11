@@ -15,6 +15,7 @@ class SideNav extends Component {
                         )
                     })}
                 </ul>
+                <button onClick={this.props.handleAddWineClick}>Add New Wine</button>
             </div>
         );
     }
