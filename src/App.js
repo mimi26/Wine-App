@@ -53,10 +53,34 @@ class App extends Component {
       this.setState({ wines: res });
     });
   }
+  //post request using axios:
+  // handleNewWineSubmit(e) {
+  //   e.preventDefault();
+  //   axios.post(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`, {
+  //       name: e.target.name.value,
+  //       year: e.target.year.value,
+  //       grapes: e.target.grapes.value,
+  //       country: e.target.country.value,
+  //       region: e.target.region.value,
+  //       description: e.target.description.value,
+  //       picture: e.target.picture.value,
+  //       price: e.target.price.value
+  //   })
+  //   .then(res => {
+  //     this.setState({ isAddWineClicked: false })
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
+  // }
 
+  //post request using fetch:
   handleNewWineSubmit(e) {
     e.preventDefault();
-    axios.post(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`, {
+    fetch(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`, {
+      headers: { "content-type": "application/json" },
+      method: "post",
+      body: JSON.stringify({ 
         name: e.target.name.value,
         year: e.target.year.value,
         grapes: e.target.grapes.value,
@@ -65,8 +89,10 @@ class App extends Component {
         description: e.target.description.value,
         picture: e.target.picture.value,
         price: e.target.price.value
+      })
     })
     .then(res => {
+      console.log(res)
       this.setState({ isAddWineClicked: false })
     })
     .catch(err => {
@@ -111,11 +137,11 @@ class App extends Component {
 
   renderHeader() {
     const { isAddWineClicked, isEditClicked, isWineClicked, clickedWine } = this.state;
-    if (this.state.isWineClicked) {
+    if (isWineClicked) {
       return <h1 className="header-clicked-wine">: {clickedWine.name}, {clickedWine.year}</h1>
-    } else if (this.state.isAddWineClicked) {
+    } else if (isAddWineClicked) {
       return <h1 className="header-clicked-wine">: Add New Wine Form</h1>
-    } else if (this.state.isEditClicked) {
+    } else if (isEditClicked) {
       return <h1 className="header-clicked-wine">: Edit Wine</h1>
     } else {
       return null;
