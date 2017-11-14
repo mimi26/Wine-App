@@ -71,7 +71,7 @@ class EditWineForm extends Component {
           picture: this.state.picture,
           price: this.state.price
         }).then(res => {
-            this.props.renderWineList();
+            this.props.redirectToWineList();
         })
       }
 

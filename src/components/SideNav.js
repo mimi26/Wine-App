@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class SideNav extends Component {
     render() {
-        const { wines, handleWineClick, handleBackClick } = this.props;
+        const { wines, handleWineClick, resetClickedWine } = this.props;
 
         return (
             <div className="side-nav">
@@ -11,12 +12,20 @@ class SideNav extends Component {
                 <ul>
                     {wines.map((wine, i) => {
                         return(
-                            <li key={i} onClick={() => handleWineClick(wine)}>{wine.name}, {wine.year}</li>
+                            <li key={i} onClick={() => handleWineClick(wine)}>
+                                <Link to={`wine/${wine.id}`}>
+                                    {wine.name}, {wine.year}
+                                </ Link>
+                            </li>
                         )
                     })}
                 </ul>
-                <button onClick={this.props.handleAddWineClick}>Add New Wine</button>
-                <button onClick={handleBackClick}>View All Wines</button>
+                <Link to="/new">
+                    <button onClick={resetClickedWine}>Add New Wine</button>
+                </ Link>
+                <Link to ="/">
+                    <button>View All Wines</button>
+                </ Link>
             </div>
         );
     }

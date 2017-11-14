@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class SingleWine extends Component {
+    
     render() {
         const { clickedWine, editWine } = this.props;
         return (
             <div className="single-wine-container">
-                <button onClick={() => editWine(clickedWine.id)}>Edit this wine</button>
+                <Link to="/edit">
+                    <button onClick={() => editWine(clickedWine.id)}>Edit this wine</button>
+                </ Link>
                 <div className="single-wine-listing">
                     <div className="wine-price">$ {clickedWine.price}.00</div>
                     <div className="single-wine-name">{clickedWine.name}, {clickedWine.year}</div>

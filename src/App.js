@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import './App.css';
 import axios from 'axios';
 import SideNav from './components/SideNav';
@@ -12,38 +13,23 @@ class App extends Component {
     super();
     this.state = {
       wines: [],
-      isWineClicked: false,
-      isAddWineClicked: false,
       clickedWine: '',
-      isEditClicked: false,
       wineToEdit: '',
+      fireRedirect: false
     }
 
     this.getWineData = this.getWineData.bind(this);
     this.handleWineClick = this.handleWineClick.bind(this);
-    this.handleBackClick = this.handleBackClick.bind(this);
     this.handleNewWineSubmit = this.handleNewWineSubmit.bind(this);
-    this.handleAddWineClick = this.handleAddWineClick.bind(this);
-    this.whichComponentToRender = this.whichComponentToRender.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
     this.deleteWine = this.deleteWine.bind(this);
     this.editWine = this.editWine.bind(this);
-    this.renderWineList = this.renderWineList.bind(this);
+    this.redirectToWineList = this.redirectToWineList.bind(this);
+    this.resetClickedWine = this.resetClickedWine.bind(this);
   }
 
   handleWineClick(wineData) {
-    this.setState({ 
-      isWineClicked: true,
-      clickedWine: wineData
-    });
-  }
-  
-  handleBackClick() {
-    this.setState({ 
-      isWineClicked: false,
-      isAddWineClicked: false,
-      isEditClicked: false
-    });
+    this.setState({ clickedWine: wineData });
   }
 
   getWineData() {
@@ -53,26 +39,6 @@ class App extends Component {
       this.setState({ wines: res });
     });
   }
-  //post request using axios:
-  // handleNewWineSubmit(e) {
-  //   e.preventDefault();
-  //   axios.post(`https://myapi-profstream.herokuapp.com/api/c8542c/wines`, {
-  //       name: e.target.name.value,
-  //       year: e.target.year.value,
-  //       grapes: e.target.grapes.value,
-  //       country: e.target.country.value,
-  //       region: e.target.region.value,
-  //       description: e.target.description.value,
-  //       picture: e.target.picture.value,
-  //       price: e.target.price.value
-  //   })
-  //   .then(res => {
-  //     this.setState({ isAddWineClicked: false })
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  // }
 
   //post request using fetch:
   handleNewWineSubmit(e) {
@@ -92,8 +58,7 @@ class App extends Component {
       })
     })
     .then(res => {
-      console.log(res)
-      this.setState({ isAddWineClicked: false })
+      this.setState({ fireRedirect: true });
     })
     .catch(err => {
       console.log(err);
@@ -110,88 +75,58 @@ class App extends Component {
     })
   }
 
-  handleAddWineClick() {
-    this.setState({ 
-      isAddWineClicked: true,
-      isEditClicked: false,
-      isWineClicked: false
-     });
-  }
-
   editWine(id) {
    this.setState({ 
-     isEditClicked: true,
-     isWineClicked: false,
-     isAddWineClicked: false,
-     wineToEdit: id 
-    });
+      wineToEdit: id,
+      clickedWine: ''
+     });
   }
-
-  renderWineList() {
-    this.setState({
-      isAddWineClicked: false,
-      isWineClicked: false,
-      isEditClicked: false
-    });
+  //to redirect back to root route on form submit (new wine and edit)
+  redirectToWineList() {
+    this.setState({ fireRedirect: true });
+  }
+  //reset clickedWine back to null so that header is empty on redirect.
+  resetClickedWine() {
+    this.setState({ clickedWine: '' });
   }
 
   renderHeader() {
-    const { isAddWineClicked, isEditClicked, isWineClicked, clickedWine } = this.state;
-    if (isWineClicked) {
+    const { clickedWine, fireRedirect } = this.state;
+    if (clickedWine) {
       return <h1 className="header-clicked-wine">: {clickedWine.name}, {clickedWine.year}</h1>
-    } else if (isAddWineClicked) {
-      return <h1 className="header-clicked-wine">: Add New Wine Form</h1>
-    } else if (isEditClicked) {
-      return <h1 className="header-clicked-wine">: Edit Wine</h1>
     } else {
       return null;
     }
   }
 
-  whichComponentToRender() {
-    if (this.state.isWineClicked) {
-      return (
-        <SingleWine clickedWine={this.state.clickedWine}  
-                    editWine={this.editWine} />
-      )
-    } else if (this.state.isAddWineClicked) {
-      return (
-        <NewWineForm  handleAddWineClick={this.handleAddWineClick}
-                      handleNewWineSubmit={this.handleNewWineSubmit} 
-                      newWineName={this.state.newWineName}/>
-      )
-    } else if (this.state.isEditClicked) {
-      return (
-        <EditWineForm clickedWine={this.state.clickedWine}
-                      wineToEdit={this.state.wineToEdit}
-                      renderWineList={this.renderWineList}/>
-      )
-    }
-    else {
-      return (
-        <WinePage wines={this.state.wines}
-                  handleWineClick={this.handleWineClick}
-                  deleteWine={this.deleteWine} 
-                  getWineData={this.getWineData}/>
-      )
-    }
-  }
-
   render() {
     return (
-      <div>
-        <div className="header-wrapper">
-          <h1 className="header">Wine Time</h1>
-          {this.renderHeader()}
+      <BrowserRouter>
+        <div>
+          <div className="header-wrapper">
+            <h1 className="header">Wine Time</h1>
+            {this.renderHeader()}
+          </div>
+          <div className="container">
+              <SideNav  wines={this.state.wines}
+                        handleWineClick={this.handleWineClick}
+                        resetClickedWine={this.resetClickedWine} />
+              <Route exact path="/" render={(props) => <WinePage  wines={this.state.wines}
+                                                                  handleWineClick={this.handleWineClick}
+                                                                  deleteWine={this.deleteWine} 
+                                                                  getWineData={this.getWineData} />} />
+              <Route path="/wine/:id" render={(props) => <SingleWine clickedWine={this.state.clickedWine}  
+                                                                    editWine={this.editWine} />} />
+              <Route path="/new" render={(props) => <NewWineForm  handleAddWineClick={this.handleAddWineClick}
+                                                                  handleNewWineSubmit={this.handleNewWineSubmit} 
+                                                                  newWineName={this.state.newWineName}/>} />
+              <Route path="/edit" render={(props) => <EditWineForm  clickedWine={this.state.clickedWine}
+                                                                    wineToEdit={this.state.wineToEdit}
+                                                                    redirectToWineList={this.redirectToWineList}/>} />
+          </div>
+          {this.state.fireRedirect && <Redirect to="/"/>}
         </div>
-        <div className="container">
-            <SideNav  wines={this.state.wines}
-                      handleWineClick={this.handleWineClick}
-                      handleAddWineClick={this.handleAddWineClick}
-                      handleBackClick={this.handleBackClick} />
-            {this.whichComponentToRender()}
-        </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }
